@@ -4,14 +4,19 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.Random;
+
 import static java.lang.System.out;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DieTest {
 
+    static Random random;
+
     @BeforeAll
     static void startAll() {
         out.println("--- Starting Die Tests ---");
+        random = new Random(4);
     }
 
     @AfterAll
@@ -31,7 +36,7 @@ class DieTest {
 
     @Test
     void constructor_default() {
-        out.println("constructor with parameters");
+        out.println("constructor without parameters");
         Die die = new Die();
         out.println("die.value = " + die.getValue());
         assertEquals(Die.INIT_VALUE, die.getValue());
@@ -104,4 +109,16 @@ class DieTest {
         assertTrue(value > 0);
         assertTrue(value <= 6);
     }
+
+    @RepeatedTest(5)
+    void roll_reproducible(RepetitionInfo info) {
+        out.println("repetition: " + info.getCurrentRepetition());
+        Die die = new Die(random);
+        int value = die.roll();
+        out.println("die.value = " + die.getValue());
+        assertEquals(value, die.getValue());
+        assertTrue(value > 0);
+        assertTrue(value <= 6);
+    }
+
 }
